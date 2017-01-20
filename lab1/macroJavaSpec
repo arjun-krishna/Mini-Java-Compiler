@@ -1,0 +1,58 @@
+
+Goal	:	(MacroDefinition)* MainClass ( TypeDeclaration )* <EOF>
+
+MainClass	:	class Identifier { public static void main ( String [] Identifier ) { System.out.println ( Expression ); } }
+
+TypeDeclaration	:	class Identifier { ( Type Identifier ;)* ( MethodDeclaration )* }
+								|	class Identifier extends Identifier { ( Type Identifier;)* ( MethodDeclaration )* }
+
+MethodDeclaration	:	public Type Identifier ( ( Type Identifier (, Type Identifier)*)? ) { ( Type Identifier ;)* ( Statement )* return Expression ; }
+
+Type	:	int [ ]
+			|	boolean
+			|	int
+			|	Identifier
+
+Statement	:	{ ( Statement )* }
+					|	System.out.println ( Expression );
+					|	Identifier = Expression ;
+					|	Identifier [ Expression ] = Expression ;
+					|	if ( Expression ) Statement
+					|	if ( Expression ) Statement else Statement
+					|	while ( Expression ) Statement
+					|	Identifier ( (Expression (, Expression )*)?); /* Macro stmt call */
+
+Expression	:	PrimaryExpression && PrimaryExpression
+						|	PrimaryExpression || PrimaryExpression
+						|	PrimaryExpression != PrimaryExpression
+						|	PrimaryExpression <= PrimaryExpression
+						|	PrimaryExpression + PrimaryExpression
+						|	PrimaryExpression - PrimaryExpression
+						|	PrimaryExpression * PrimaryExpression
+						|	PrimaryExpression / PrimaryExpression
+						|	PrimaryExpression [ PrimaryExpression ]
+						|	PrimaryExpression . length
+						|	PrimaryExpression
+						|	PrimaryExpression . Identifier ( (Expression (, Expression )*)? )
+						|	Identifier ( (Expression (, Expression )*)? )/* Macro expr call */
+
+PrimaryExpression	:	Integer
+									|	true
+									|	false
+									|	Identifier
+									|	this
+									|	new int [ Expression ]
+									|	new Identifier ( )
+									|	! Expression
+									|	( Expression )
+
+MacroDefinition	:	MacroDefExpression
+								|	MacroDefStatement
+
+MacroDefStatement	:	#define Identifier ( (Identifier (, Identifier )*)? ) { ( Statement )* }
+
+MacroDefExpression	::=	#define Identifier ( (Identifier (, Identifier )*)? ) ( Expression )
+
+Identifier	:	IDENTIFIER
+
+Integer	:	INTEGER
